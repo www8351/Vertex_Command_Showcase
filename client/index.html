@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="he">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, interactive-widget=resizes-visual" />
+
+    <meta property="og:title" content="VERTEX COMMAND - Trading Command Center" />
+    <meta property="og:description" content="מערכת ניהול חשבונות נוסטרו מקצועית - VERTEX COMMAND. מעקב חשבונות, ניתוח ביצועים, התראות ומשיכות." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://replit.com/public/images/opengraph.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@replit" />
+    <meta name="twitter:title" content="VERTEX COMMAND - Trading Command Center" />
+    <meta name="twitter:description" content="מערכת ניהול חשבונות נוסטרו מקצועית - VERTEX COMMAND. מעקב חשבונות, ניתוח ביצועים, התראות ומשיכות." />
+    <meta name="twitter:image" content="https://replit.com/public/images/opengraph.png" />
+
+    <script>
+    (function(){
+      var _origError = Error;
+      var _lastThrown = null;
+      var _patchedThrow = function(){
+        try { throw new _origError('stack-trace'); } catch(e) { _lastThrown = e.stack; }
+      };
+      window.onerror=function(m,s,l,c,err){
+        if(typeof m==='string'&&(m.indexOf('ResizeObserver')!==-1||m==='Script error.'))return true;
+        console.warn('[TRAP-ONERROR]',JSON.stringify({msg:String(m),src:String(s),line:l,col:c,errType:typeof err,errVal:String(err),errIsNull:err===null,errIsUndef:err===undefined}));
+        return true;
+      };
+      window.addEventListener('error',function(e){
+        var m=e&&e.message||'';
+        if(m.indexOf('ResizeObserver')!==-1)return;
+        console.warn('[TRAP-ERROR]',JSON.stringify({msg:m,file:e.filename,line:e.lineno,col:e.colno,errType:typeof e.error,errVal:String(e.error),errIsNull:e.error===null,errIsUndef:e.error===undefined,isTrusted:e.isTrusted,target:e.target?e.target.tagName:'none'}));
+        e.stopImmediatePropagation();e.preventDefault();
+      },true);
+      window.addEventListener('unhandledrejection',function(e){
+        var r=e.reason;
+        _patchedThrow();
+        console.warn('[TRAP-REJECT]',JSON.stringify({type:typeof r,val:String(r),isError:r instanceof Error,isNull:r===null,isUndef:r===undefined,stack:r&&r.stack?r.stack.substring(0,500):'',keys:r&&typeof r==='object'?Object.keys(r).join(','):'',trace:_lastThrown?_lastThrown.substring(0,500):''}));
+        e.preventDefault();e.stopImmediatePropagation();
+      },true);
+    })();
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&family=Heebo:wght@100..900&family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
