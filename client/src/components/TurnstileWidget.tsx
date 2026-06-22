@@ -46,6 +46,20 @@ function loadTurnstileScript(): Promise<void> {
   });
 }
 
+/**
+ * Cloudflare Turnstile's remove() is not idempotent: calling it on a widget
+ * whose DOM node was already detached (React StrictMode double-mount, a fast
+ * re-render, or unmount after CF already cleaned up) throws
+ * "Node cannot be found in the current page.". That error is benign — swallow it.
+ */
+function safeRemove(widgetId: string) {
+  try {
+    window.turnstile?.remove(widgetId);
+  } catch {
+    /* widget node already gone — ignore */
+  }
+}
+
 export default function TurnstileWidget({ siteKey, onVerify, onExpire, onError, resetKey = 0 }: TurnstileWidgetProps) {
   const { t, i18n } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -55,7 +69,7 @@ export default function TurnstileWidget({ siteKey, onVerify, onExpire, onError, 
   const renderWidget = useCallback(() => {
     if (!containerRef.current || !window.turnstile) return;
     if (widgetIdRef.current) {
-      window.turnstile.remove(widgetIdRef.current);
+      safeRemove(widgetIdRef.current);
       widgetIdRef.current = null;
     }
     const lang = i18n.language === "he" ? "he" : i18n.language === "ar" ? "ar" : i18n.language === "es" ? "es" : "en";
@@ -82,8 +96,8 @@ export default function TurnstileWidget({ siteKey, onVerify, onExpire, onError, 
   useEffect(() => {
     loadTurnstileScript().then(renderWidget);
     return () => {
-      if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.remove(widgetIdRef.current);
+      if (widgetIdRef.current) {
+        safeRemove(widgetIdRef.current);
         widgetIdRef.current = null;
       }
     };
