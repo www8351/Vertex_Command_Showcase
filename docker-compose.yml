@@ -1,0 +1,111 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-vertex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-vertex_command}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vertex} -d ${POSTGRES_DB:-vertex_command}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    shm_size: 128mb
+
+  vertex-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-vertex}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-vertex_command}
+      NODE_ENV: production
+      PORT: 5000
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env}
+      TRUST_PROXY: "1"
+      ANALYTICS_URL: http://analytics:8100
+    # .env is optional to the parser, but required in practice: CREDENTIALS_ENCRYPTION_KEY
+    # and SIGNAL_WEBHOOK_SECRET reach the app ONLY through this file. The deploy flow must
+    # always generate .env from .env.example (see README Deployment + MIGRATION_CHECKLIST).
+    env_file:
+      - path: .env
+        required: false
+    networks:
+      - internal
+    healthcheck:
+      # 127.0.0.1 (not localhost): musl/Alpine resolves localhost->::1 first, but the
+      # app listens IPv4 0.0.0.0:5000 only, so a localhost probe gets refused.
+      # start_period covers the ~40s boot (drizzle push + seeding) before listen.
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:5000/metrics"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  analytics:
+    build:
+      context: ./analytics
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ANALYTICS_DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-vertex}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-vertex_command}
+      ANALYTICS_LOG_LEVEL: info
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8100/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  ingress:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      vertex-app:
+        condition: service_started
+      analytics:
+        condition: service_started
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    volumes:
+      - ssl_certs:/etc/letsencrypt
+      - certbot_webroot:/var/www/certbot
+    networks:
+      - internal
+
+  certbot:
+    image: certbot/certbot:latest
+    profiles:
+      - ssl
+    volumes:
+      - ssl_certs:/etc/letsencrypt
+      - certbot_webroot:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot --webroot-path=/var/www/certbot --cert-name vertex; sleep 12h & wait $${!}; done;'"
+    networks:
+      - internal
+
+volumes:
+  pgdata:
+  ssl_certs:
+  certbot_webroot:
+
+networks:
+  internal:
+    driver: bridge
