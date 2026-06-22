@@ -1,0 +1,295 @@
+# ==============================================================================
+# Secrets & Credentials  —  NEVER COMMIT
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*.env.local
+*.env.production
+*.env.development
+
+# Key material
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.asc
+*.gpg
+id_rsa
+id_ed25519
+id_ecdsa
+known_hosts
+
+# Service-specific secret stores
+/.stripe-keys.json
+**/credentials.json
+**/service-account*.json
+**/gcp-key*.json
+**/firebase-adminsdk*.json
+**/aws-credentials*
+**/*.token
+**/sessions/
+**/session-tokens*
+
+# ==============================================================================
+# Node.js / TypeScript
+# ==============================================================================
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.npm/
+
+# Build / bundler output
+/dist/
+/build/
+/out/
+**/.vite/
+**/.vite-temp/
+*.tsbuildinfo
+.rollup.cache/
+
+# TS / lint caches
+.eslintcache
+.stylelintcache
+.tsbuildinfo
+
+# ==============================================================================
+# Python
+# ==============================================================================
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtualenvs
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Packaging / build
+*.egg
+*.egg-info/
+.eggs/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+# Anchored to repo-root so these Python-venv dirs don't also ignore app source
+# like client/src/lib/ (which holds queryClient.ts + utils.ts).
+/lib/
+/lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.whl
+MANIFEST
+
+# Test / type / lint caches
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# ==============================================================================
+# Databases & Data
+# ==============================================================================
+*.sqlite
+*.sqlite3
+*.sqlite3-journal
+*.db
+*.db-journal
+*.rdb
+*.dump
+*.sql.gz
+/backups/
+**/backups/
+/migrations/*.local.sql
+
+# ==============================================================================
+# Docker / Infrastructure
+# ==============================================================================
+docker-compose.override.yml
+docker-compose.local.yml
+.docker/
+**/docker-data/
+**/postgres-data/
+**/redis-data/
+**/grafana-data/
+**/prometheus-data/
+**/clickhouse-data/
+
+# Nginx local TLS / certbot state
+/nginx/ssl/
+/nginx/certs/
+/nginx/letsencrypt/
+**/*.conf.local
+
+# Terraform / Pulumi (if added)
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+.pulumi/
+
+# Kubernetes local
+*.kubeconfig
+kubeconfig
+
+# ==============================================================================
+# Logs / Runtime / Telemetry
+# ==============================================================================
+*.log
+logs/
+**/logs/
+/dev-server.log
+/vite-dev.log
+*.pid
+*.seed
+*.pid.lock
+.nyc_output/
+
+# ==============================================================================
+# Caches / Generated Artifacts
+# ==============================================================================
+.cache/
+**/.cache/
+.tmp/
+tmp/
+.parcel-cache/
+.next/
+.nuxt/
+.svelte-kit/
+.turbo/
+
+# Project-specific generated dirs
+/.agents/
+/.canvas/
+/_bmad-output/
+/artifacts/
+# Ignore the CONTENTS (not the dir itself) so the .gitkeep negation below can re-include
+# the placeholder — git can't re-include a file whose parent dir is excluded.
+/attached_assets/*
+# Keep the dir present (empty) so the Dockerfile's COPY attached_assets succeeds on a
+# clean checkout, without committing the 47 MB of (unused) media itself.
+!/attached_assets/.gitkeep
+
+# Ambiguous root artifact (review before committing)
+/sedixQDsR
+
+# ==============================================================================
+# IDE / Editor
+# ==============================================================================
+.vscode/
+!.vscode/settings.json.example
+!.vscode/extensions.json
+.idea/
+*.iml
+*.ipr
+*.iws
+.fleet/
+.zed/
+*.sublime-project
+*.sublime-workspace
+.history/
+.ionide/
+
+# ==============================================================================
+# OS — Windows / PowerShell
+# ==============================================================================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.stackdump
+[Dd]esktop.ini
+PSReadLine/
+*.ps1.bak
+
+# ==============================================================================
+# OS — Linux
+# ==============================================================================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ==============================================================================
+# OS — macOS
+# ==============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.TemporaryItems
+
+# ==============================================================================
+# Replit / Cloud IDE
+# ==============================================================================
+.replit
+replit.nix
+.upm/
+.config/
+.breakpoints
+
+# ==============================================================================
+# Misc
+# ==============================================================================
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+*.tmp
+.~lock.*#
+core
+core.*
+
+# ==============================================================================
+# Prop Calculator scratch (isolated math engine sandbox)
+# ==============================================================================
+server/utils/*.local.ts
+server/utils/*.tmp.json
+server/utils/__sandbox__/
