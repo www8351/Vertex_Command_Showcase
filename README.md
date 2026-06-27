@@ -1,3 +1,8 @@
+
+
+https://github.com/user-attachments/assets/863f3e94-9e42-4b0a-bff0-9931864005f9
+
+
 # Vertex Command
 
 Full-stack **trade-execution & copy-trading SaaS** for proprietary-firm and
