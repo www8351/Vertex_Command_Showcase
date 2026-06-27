@@ -1,6 +1,8 @@
 
+<p align="center">
+  <video src="[PASTE_YOUR_GENERATED_GITHUB_LINK_HERE](https://github.com/user-attachments/assets/863f3e94-9e42-4b0a-bff0-9931864005f9)" width="100%" controls autoplay loop muted></video>
+</p>
 
-https://github.com/user-attachments/assets/863f3e94-9e42-4b0a-bff0-9931864005f9
 
 
 # Vertex Command
