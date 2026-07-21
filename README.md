@@ -10,11 +10,11 @@
 Full-stack **trade-execution & copy-trading SaaS** for proprietary-firm and
 multi-broker futures traders. A low-latency routing engine ingests broker
 WebSocket streams, applies per-strategy risk rules, and mirrors fills across
-linked accounts in real time — fronted by an animated React/WebGL control
+linked accounts in real time fronted by an animated React/WebGL control
 center for monitoring, journaling, billing, and analytics.
 
 > **About this repository.** Sanitized public **code showcase** of a private
-> production codebase. No secrets exist in source or in Git history — every
+> production codebase. No secrets exist in source or in Git history every
 > credential (broker API keys, Stripe, OpenAI, session/encryption keys, DB
 > passwords) is injected at runtime from environment variables; see
 > [`.env.example`](./.env.example). This mirror is for engineering review, not
@@ -24,19 +24,19 @@ center for monitoring, journaling, billing, and analytics.
 
 ## What it does
 
-- **Copy trading** — a routing engine (`server/copy-trading-engine.ts`) mirrors
+- **Copy trading** a routing engine (`server/copy-trading-engine.ts`) mirrors
   a leader account's executions onto follower accounts, sized and gated by a
   dedicated **risk engine** (`copy-trading-risk-engine.ts`) and a configurable
   **rule engine** (`rule-engine.ts`, `broker-rules.ts`).
-- **Real-time broker integration** — live order/fill streams over WebSockets
+- **Real-time broker integration** live order/fill streams over WebSockets
   (`tradovate-websocket.ts`) against TopstepX and Tradovate; equity-tick
   processing and latency monitoring with p95-style SLO tracking.
-- **Trader workflow** — dashboards, daily/weekly journaling, drawdown
+- **Trader workflow** dashboards, daily/weekly journaling, drawdown
   evaluation, strategy management, reports, and public/shareable performance
   reports.
-- **Monetization** — Stripe subscriptions, billing portal, affiliate/partner
+- **Monetization** Stripe subscriptions, billing portal, affiliate/partner
   program, tiered account access.
-- **3D control center** — a WebGL (`three` / react-three-fiber) interface layer
+- **3D control center** a WebGL (`three` / react-three-fiber) interface layer
   for an immersive monitoring view.
 
 ---
@@ -111,19 +111,19 @@ infra/ · nginx/ · Dockerfile · docker-compose*.yml    deployment & TLS
 
 ### Engineering principles applied
 
-- **Code/config separation** — zero hardcoded credentials anywhere in source.
+- **Code/config separation** zero hardcoded credentials anywhere in source.
   All secrets come from `process.env`; `.env*` and `*.key` are gitignored and
   only `.env.example` is tracked. Production injects via the host secret store
   (Docker/compose env, CI/CD secrets, or a vault), never a committed file.
-- **Encrypted broker credentials** — third-party API credentials are encrypted
+- **Encrypted broker credentials** third-party API credentials are encrypted
   at rest (`server/encryption.ts`) using a runtime-provided key, never stored
   in plaintext.
-- **Typed end-to-end** — Drizzle schemas + Zod models are shared between client
+- **Typed end-to-end** Drizzle schemas + Zod models are shared between client
   and server, so DB rows and API payloads are typed at compile time.
-- **Realtime, latency-aware** — broker fills propagate over WebSockets with
+- **Realtime, latency-aware** broker fills propagate over WebSockets with
   latency monitoring and SLO tracking; the copy engine is decoupled from the
   risk/rule engines for testability.
-- **Defense in depth** — session auth (Passport + bcrypt), per-route rate
+- **Defense in depth** session auth (Passport + bcrypt), per-route rate
   limiting (Postgres-backed), webhook signature verification, CORS origin
   allow-listing, nginx TLS termination.
 
@@ -159,12 +159,12 @@ are optional and degrade gracefully when their env vars are unset.
 
 | Concern                  | Approach |
 |--------------------------|----------|
-| Secrets in source        | None — `process.env` only. |
-| Secrets in Git history   | None — public mirror initialized clean; private history not exposed. |
+| Secrets in source        | None `process.env` only. |
+| Secrets in Git history   | None public mirror initialized clean; private history not exposed. |
 | `.env`, `*.key`, key JSON | Gitignored; only `.env.example` is tracked. |
 | Broker/API credentials   | Encrypted at rest with a runtime key (`server/encryption.ts`). |
 | Stripe                   | Server-side secret key + webhook signature verification. |
-| Production injection      | Host env / Docker secrets / CI/CD secrets — not files. |
+| Production injection      | Host env / Docker secrets / CI/CD secrets | not files. |
 
 ## License
 
