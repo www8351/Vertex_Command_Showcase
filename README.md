@@ -55,6 +55,7 @@ center for monitoring, journaling, billing, and analytics.
 | Auth         | Passport, bcrypt, session cookies, Google OAuth |
 | Payments     | Stripe (subscriptions, webhooks, billing portal) |
 | AI           | OpenAI (auto-tagging / assistive features) |
+| Analytics    | Python FastAPI + Pandas microservice (`analytics/`), Prometheus-instrumented |
 | Infra        | Docker, docker-compose, nginx + certbot (TLS), entrypoint orchestration |
 | Validation   | Zod (shared client/server schemas) |
 
@@ -71,13 +72,16 @@ center for monitoring, journaling, billing, and analytics.
                          └───────────────┬───────────────▲─────────────┘
                             REST + WS     │               │ live updates
                          ┌───────────────▼───────────────┴─────────────┐
-                         │  Express API (server/, 57 modules)           │
+                         │  Express API (server/, 55 modules)           │
                          │  ┌─────────────┐  ┌──────────────────────┐   │
    Broker feeds  ──WS──▶ │  │ copy-trading │  │ rule / risk engines  │   │
    (Tradovate /          │  │   engine     │─▶│ broker-rules         │   │
     TopstepX)            │  └─────────────┘  └──────────────────────┘   │
                          │  billing(Stripe) · affiliates · journal ·    │
                          │  signals/webhooks · admin · monitoring       │
+                         │            │ proxies /analytics              │
+                         │            ▼                                 │
+                         │  FastAPI + Pandas (analytics/)               │
                          └───────────────┬──────────────────────────────┘
                                          │ Drizzle ORM (typed)
                          ┌───────────────▼──────────────────────────────┐
@@ -98,14 +102,18 @@ client/          React + Vite SPA
   src/stores/    Zustand state
   src/lib/       API client, query hooks, helpers
   src/locales/   i18n strings
-server/          Express API — 57 modules
+server/          Express API — 55 top-level modules (68 .ts files with subdirs)
   copy-trading-engine.ts / copy-trading-risk-engine.ts / rule-engine.ts
   tradovate-websocket.ts / equity-tick-processor.ts   (realtime broker I/O)
   billing-routes.ts / stripeClient.ts                 (payments)
   encryption.ts                                        (at-rest credential crypto)
   admin / affiliate / journal / signal / monitor routes
 shared/          Drizzle schemas + Zod models shared by client and server
+analytics/       Python FastAPI + Pandas service — trade metrics, risk summary,
+                 copy performance; async SQLAlchemy over the same Postgres
 migrations/      SQL migrations (drizzle-kit)
+script/          build.ts (production bundle)
+scripts/         seeding, migration and audit helpers
 infra/ · nginx/ · Dockerfile · docker-compose*.yml    deployment & TLS
 ```
 
